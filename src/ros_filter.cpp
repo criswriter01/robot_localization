@@ -1013,7 +1013,7 @@ namespace RobotLocalization
              "\npermit_corrected_publication is " << std::boolalpha << permitCorrectedPublication_ <<
              "\nprint_diagnostics is " << std::boolalpha << printDiagnostics_ <<
              "\nsuppress tf warnings is " << std::boolalpha << tfSilentFailure_ << "\n" "\n");
-
+     
     // Create a subscriber for manually setting/resetting pose
     setPoseSub_ = nh_.subscribe("set_pose",
                                 1,
@@ -1928,11 +1928,12 @@ namespace RobotLocalization
       // Just for safety, we also check for the condition where the last published stamp is *later* than this stamp.
       // This should never happen, but we should handle the case anyway.
       corrected_data = (!permitCorrectedPublication_ && lastPublishedStamp_ >= filteredPosition.header.stamp);
-
+      
       // If the worldFrameId_ is the odomFrameId_ frame, then we can just send the transform. If the
       // worldFrameId_ is the mapFrameId_ frame, we'll have some work to do.
       if (publishTransform_ && !corrected_data)
       {
+
         if (filteredPosition.header.frame_id == odomFrameId_)
         {
           worldTransformBroadcaster_.sendTransform(worldBaseLinkTransMsg_);

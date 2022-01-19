@@ -155,6 +155,7 @@ namespace RobotLocalization
         // Append the tf prefix in a tf2-friendly manner
         FilterUtilities::appendPrefix(tf_prefix, world_frame_id_);
         FilterUtilities::appendPrefix(tf_prefix, base_link_frame_id_);
+        ROS_WARN_STREAM("CRIS HUELE MAL. tf prefix:" );
 
         robot_localization::SetDatum::Request request;
         request.geo_pose.position.latitude = datum_lat;
@@ -234,6 +235,7 @@ namespace RobotLocalization
 
   void NavSatTransform::computeTransform()
   {
+  	ROS_WARN_STREAM("computeTransform");
     // Only do this if:
     // 1. We haven't computed the odom_frame->cartesian_frame transform before
     // 2. We've received the data we need
@@ -242,6 +244,7 @@ namespace RobotLocalization
         has_transform_gps_ &&
         has_transform_imu_)
     {
+      	ROS_WARN_STREAM("!transform_good_ &&has_transform_odom_ &&has_transform_gps_ &&has_transform_imu_");
       // The cartesian pose we have is given at the location of the GPS sensor on the robot. We need to get the
       // cartesian pose of the robot's origin.
       tf2::Transform transform_cartesian_pose_corrected;
@@ -320,8 +323,10 @@ namespace RobotLocalization
       transform_good_ = true;
 
       // Send out the (static) Cartesian transform in case anyone else would like to use it.
-      if (broadcast_cartesian_transform_)
+      if (true)//broadcast_cartesian_transform_)
       {
+	ROS_WARN_STREAM("CRIS HUELE MAL. worl_frame:"  << world_frame_id_ );
+        
         geometry_msgs::TransformStamped cartesian_transform_stamped;
         cartesian_transform_stamped.header.stamp = ros::Time::now();
         cartesian_transform_stamped.header.frame_id = (broadcast_cartesian_transform_as_parent_frame_ ?
@@ -611,6 +616,7 @@ namespace RobotLocalization
   void NavSatTransform::gpsFixCallback(const sensor_msgs::NavSatFixConstPtr& msg)
   {
     gps_frame_id_ = msg->header.frame_id;
+    
 
     if (gps_frame_id_.empty())
     {
@@ -733,6 +739,7 @@ namespace RobotLocalization
   void NavSatTransform::odomCallback(const nav_msgs::OdometryConstPtr& msg)
   {
     world_frame_id_ = msg->header.frame_id;
+    //ROS_WARN_STREAM("CRIS HUELE MAL. msg header frame_id :" << msg->header.frame_id);
     base_link_frame_id_ = msg->child_frame_id;
 
     if (!transform_good_ && !use_manual_datum_)
